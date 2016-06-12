@@ -1,0 +1,100 @@
+productMarcas:
+{
+	_id : 1,
+	nome: "MHP"	
+}
+
+fornecedor:
+{
+	_id: 1,
+	nome: "Abe America",
+	contato :
+	[
+		{
+			nome: "josefina",
+			telefone: "45645645",
+			email: "josefa@gmail.com"
+		}		
+	],
+	marcas:
+	[
+		1,2,3,4,5,6
+	]
+}
+
+Pedido:
+{
+	_id : 1
+	dataCompra: "2016-06-02",
+	fornecedorId: 1,
+	marcaId: [1,2],
+	valorPedido: 1000.00,
+	tributos: 100.00,
+	valorTotal: 1100.00,
+	formaPagamento: "30/40/50",
+	datasVencimento: 
+	[
+		{
+			data: "2016-07-02",
+			valor: 300.00,
+			pago: true
+		}
+	]
+}
+
+
+produto:
+{
+	_id: 1,
+	produto: "Whey qualquer",
+	marcaId: 1,	
+	variedade: 
+		[			
+			{
+				_id: 1,
+				descricao: "morango", //mas pode ser 120caps
+				tamanho: 900
+			}
+		]
+}
+
+detalhePedido:
+{
+	_id: 1,
+	pedidoId: 1,
+	produtos:
+	[
+		{
+			produtoId: 1,
+			produtoVariedadeId: 1,
+			quantidade: 2,
+			detalhes: 
+			[
+				{
+					dataVencimento: "2016-05-05",
+					ncm: 12345678,
+					cfop: 1234,
+					vendido: true					
+				},
+				{
+					dataVencimento: "2016-05-05",
+					ncm: 12345678,
+					cfop: 1234,
+					vendido: true
+				}
+			],
+			quantidadeTotal: 2,	
+			custo: 100.00,
+			custoTaxas: 110.00 // (taxas / valor total do pedido) * custo		
+			valorVenda: 200.00,
+			valorPromocao: 150.00,
+			promocaoAplicado: true,
+			descontoCartao: 0,
+			descontoBoleto: 10,
+			valorFinalCartao: 150.00,
+			valorFinalBoleto: 135.00,
+			margemCartao: 40,
+			margemBoleto: 30
+		}
+	]
+}
