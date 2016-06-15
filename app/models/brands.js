@@ -18,6 +18,10 @@ brandSchema.statics.getAll = function (cb) {
   return this.find({}, cb);
 }
 
+brandSchema.statics.findOneAndUpdate = function(query, callback){
+	Model.findOneAndUpdate(query, { name: 'jason borne' }, options, callback)
+}
+
 brandSchema.plugin(autoIncrement.plugin, {
     model: 'Brands',
     field: '_id',

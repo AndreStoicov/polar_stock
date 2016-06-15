@@ -1,5 +1,6 @@
 var express = require('express'),
 	router = express.Router();
+var log = require(appRoot + '/app/utils/logger');
 
 var Brands = require(appRoot +'/app/models/brands');
 
@@ -16,9 +17,14 @@ router.post('/', function(req, res){
 		name : req.body.name
 	});
 	
-	brand.save(function(err, brand){		
+	brand.save(function(err){		
 		if(err)
-			res.send(err);
+		{
+			console.log(log);
+			log.log('fatal',err.errmsg);
+			res.json({ error: err });
+		}	
+		//log.info('the Brand' + brand + 'was sucessfuly created.')
 		res.json({ message: 'brand created!' });
 	});
 });
