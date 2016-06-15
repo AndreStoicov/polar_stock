@@ -1,61 +1,64 @@
-var app = require(appRoot + '/server');
 var winston = require('winston');
-require('winston-mongodb').MongoDB;
-
-//var _ = require('lodash');
+var MongoDB = require('winston-mongodb').MongoDB;
 
 // Set up logger
-var customColors = {
-  trace: 'white',
-  debug: 'green',
-  info: 'green',
-  warn: 'yellow',
-  crit: 'red',
-  fatal: 'red'
+var myCustomLevels = {
+    levels: {
+        debug: 0,
+        info: 1,
+        warn: 2,
+        error: 3
+    },
+    colors: {
+        debug: 'blue',
+        info: 'green',
+        warn: 'yellow',
+        error: 'red'
+    }
+};
+
+var mongoTransport = {
+    db: 'mongodb://localhost:27017/Polar',
+    collection: 'logs'
 };
 
 var logger = new(winston.Logger)({
-  colors: customColors,
-  levels: {
-    trace: 0,
-    debug: 1,
-    info: 2,
-    warn: 3,
-    crit: 4,
-    fatal: 5
-  },
-  transports: [
-  new(winston.transports.Console)({
-    colorize: true,
-    timestamp: true
-  }),
-  new (winston.transports.MongoDB)({ 
-    db : 'mongodb://localhost:27017/Polar',
-    collection: 'logs'
-  })
-  ]
+    levels: myCustomLevels.levels,
+    transports: [
+        new(winston.transports.Console)({
+            colorize: true,
+            timestamp: true
+        })
+    ]
 });
 
-winston.addColors(customColors);
+logger.add(MongoDB, mongoTransport);
 
-// Extend logger object to properly log 'Error' types
 var origLog = logger.log;
 
-logger.log = function (level, msg) {
-  var objType = Object.prototype.toString.call(msg);
-  if (objType === '[object Error]') {
-    origLog.call(logger, level, msg.toString());
-  } else {
-    origLog.call(logger, level, msg);
-  }
-};
-/* LOGGER EXAMPLES
-    app.logger.trace('testing');
-    app.logger.debug('testing');
-    app.logger.info('testing');
-    app.logger.warn('testing');
-    app.logger.crit('testing');
-    app.logger.fatal('testing');
-    */
+var expor = {
+    log: function(lvl, msg) {
 
-module.exports = logger;
+        if (!logger.transports.mongodb) {
+            logger.add(MongoDB, mongoTransport);
+        }
+
+        logger.transports.mongodb.level = lvl;
+
+        if (lvl === 'debug') {
+            logger.remove(logger.transports.mongodb);
+        }
+
+        logger.level = lvl;
+
+        if (msg instanceof Error) {
+            var args = Array.prototype.slice.call(arguments);
+            args[1] = msg.stack;
+            origLog.apply(logger, args);
+        } else {
+            origLog.apply(logger, arguments);
+        }
+    }
+};
+
+module.exports = expor;
