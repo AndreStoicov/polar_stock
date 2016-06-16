@@ -1,33 +1,35 @@
 // app/models/brands.js
 // grab the mongoose module
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-    autoIncrement = require('mongoose-auto-increment');
+    Schema = mongoose.Schema,
+    AutoIncrement = require('mongoose-sequence');
 
 // define my brand schema
 var brandSchema = new Schema({
-	name:  
-	{
-		type: String,
-		unique: true,
-		required: true
-	}	
-});
+    _id: Number,
+    name: {
+        type: String,
+        unique: true,
+        required: true
+    }
+}, { _id: false });
 
-brandSchema.statics.getAll = function (cb) {
-  return this.find({}, cb);
+brandSchema.plugin(AutoIncrement);
+
+brandSchema.statics.getAll = function(cb) {
+    return this.find({}, cb);
 }
 
-brandSchema.statics.findOneAndUpdate = function(query, callback){
-	Model.findOneAndUpdate(query, { name: 'jason borne' }, options, callback)
+brandSchema.statics.findAndUpdate = function(brand_id, value, callback) {
+    var q = this.where({ _id: brand_id });
+    console.log(q);
+q.update({ $set: { name: value }}).exec()
+
+    
+
+
 }
 
-brandSchema.plugin(autoIncrement.plugin, {
-    model: 'Brands',
-    field: '_id',
-    startAt: 0,
-    incrementBy: 1
-});
 // define my brands model
 // module.exports allows us to pass this to other files when it is called
 module.exports = mongoose.model('Brands', brandSchema);

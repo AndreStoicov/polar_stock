@@ -31,4 +31,17 @@ router.post('/', function(req, res) {
     });
 });
 
+router.put('/:brandId', function(req, res) {    
+    Brands.findAndUpdate(req.params.brandId, req.body.name, function(err, brand) {
+        console.log(err);
+        if (err) {
+            logger.log('error', err.errmsg);
+            return res.send(err);
+        }
+        
+        logger.log('debug', 'The Brand was updated: ' + JSON.stringify(brand));
+        res.json(brand);
+    });
+});
+
 module.exports = router;
