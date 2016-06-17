@@ -1,3 +1,4 @@
+'use strict';
 // app/models/order.js
 // grab the mongoose module
 var mongoose = require('mongoose');
