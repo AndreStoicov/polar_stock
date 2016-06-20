@@ -2,6 +2,7 @@
 // app/models/brands.js
 // grab the mongoose module
 var mongoose = require('mongoose'),
+    Promise = require('bluebird'),
     Schema = mongoose.Schema,
     AutoIncrement = require('mongoose-sequence');
 
@@ -17,6 +18,8 @@ var brandSchema = new Schema({
 
 brandSchema.plugin(AutoIncrement);
 
-// define my brands model
-// module.exports allows us to pass this to other files when it is called
-module.exports = mongoose.model('Brands', brandSchema);
+var Brands = mongoose.model('Brands', brandSchema);
+Promise.promisifyAll(Brands);
+Promise.promisifyAll(Brands.prototype);
+
+exports.Brands = Brands;
